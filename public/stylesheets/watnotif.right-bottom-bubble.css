@@ -1,0 +1,204 @@
+/*! Watnotif v1 | MIT License | github.io/watnotif*/
+/*
+ * ===== HOW-TO USE THIS LESS FILE ========
+ * 
+ * You should only compile the LESS files in "prepared" folder. To explain how they work:
+ *		- they define two variables: @vertical-position, @horizontal-position,
+ *		- they then import this file and the effect file they need.
+ * 		- and ... That's it!
+ */
+#notify-wrapper {
+  box-sizing: border-box;
+  position: fixed;
+  display: block;
+  width: 100%;
+  max-width: 450px;
+  height: 0;
+  overflow: visible;
+  z-index: 9999;
+  bottom: 20px;
+  transform: rotate(180deg);
+  right: 20px;
+}
+
+#notify-wrapper > div {
+  transform: matrix(1, 0, 0, -1, 0, 0);
+}
+
+#notify-wrapper *,
+#notify-wrapper *:before,
+#notify-wrapper *:after {
+  box-sizing: border-box;
+}
+@media (max-width: 520px) {
+  #notify-wrapper {
+    bottom: 0;
+  }
+}
+@media (max-width: 520px) {
+  #notify-wrapper {
+    right: 0;
+  }
+}
+#notify-wrapper,
+#notify-wrapper > .notify {
+  transform: matrix(1, 0, 0, -1, 0, 0);
+}
+#notify-wrapper > .notify {
+  right: -50px;
+  margin: 0 0 20px -50px;
+  border-radius: 0;
+  transition-property: top, margin, width, right, border-radius;
+  transition-duration: 0.15s;
+  transition-delay: 0s, 0s, 0.5s, 0.5s, 0.5s;
+  transition-timing-function: ease-out;
+  /* Mobile view */
+}
+#notify-wrapper > .notify.inactive {
+  right: -100%;
+  width: 50px;
+  height: 50px;
+  margin: 0 0 20px 0;
+  border-radius: 25px;
+}
+#notify-wrapper > .notify.inactive.going-out {
+  width: 100%;
+  opacity: 0;
+  border-radius: 0;
+  transition-property: margin, opacity;
+  transition-duration: 0.15s;
+  transition-delay: 0s;
+  transition-timing-function: ease-out;
+}
+@media (max-width: 520px) {
+  #notify-wrapper > .notify {
+    margin: 0;
+  }
+  #notify-wrapper > .notify > .close-notify {
+    opacity: .4;
+    transition-property: opacity;
+    transition-duration: 0.15s;
+    transition-delay: 0.5s;
+  }
+  #notify-wrapper > .notify.inactive > .close-notify {
+    opacity: 0;
+  }
+}
+#notify-wrapper > .notify {
+  position: relative;
+  display: block;
+  width: 100%;
+  min-height: 50px;
+  height: auto;
+  padding: 10px 20px;
+  cursor: pointer;
+  color: #fff;
+  box-shadow: 0 0 2px 0 rgba(0, 0, 0, 0.9);
+  overflow: hidden;
+  opacity: 1;
+  /* Customisation of the background color of the notifications depending on their type */
+}
+#notify-wrapper > .notify:before {
+  position: absolute;
+  top: 50%;
+  left: 0;
+  display: block;
+  width: 50px;
+  height: 50px;
+  margin-top: -25px;
+  padding: 10px;
+  text-align: center;
+  line-height: 30px;
+  font-family: initial, sans-serif;
+}
+#notify-wrapper > .notify > .close-notify {
+  position: absolute;
+  top: 0;
+  right: 5px;
+  z-index: 2;
+  display: block;
+  width: 30px;
+  height: 30px;
+  padding: 5px;
+  background: transparent none;
+  border: none;
+  opacity: 0;
+  outline: none;
+  font-size: 30px;
+  font-weight: normal;
+  line-height: 30px;
+  transition: opacity 0.1s ease-out;
+}
+#notify-wrapper > .notify:hover > .close-notify {
+  opacity: .4;
+}
+#notify-wrapper > .notify:hover > .close-notify:hover {
+  opacity: 1;
+}
+#notify-wrapper > .notify > p {
+  position: relative;
+  display: block;
+  width: 100%;
+  height: 100%;
+  padding: 0 12px 0 50px;
+  margin: 0;
+  opacity: 1;
+  transition-property: height, opacity, margin;
+  transition-duration: .15s;
+  transition-delay: .75s;
+}
+#notify-wrapper > .notify > p a {
+  color: inherit;
+  text-decoration: underline;
+}
+#notify-wrapper > .notify.inactive > p {
+  height: 0;
+  margin: -10px 0 0 0;
+  opacity: 0;
+  overflow: hidden;
+}
+#notify-wrapper > .notify.confirmed {
+  background: linear-gradient(135deg, #59caff 0%, #26adec 100%);
+}
+#notify-wrapper > .notify.confirmed:before {
+  content: ":)";
+}
+#notify-wrapper > .notify.success {
+  background: linear-gradient(135deg, #92db7b 0%, #70cf51 100%);
+}
+#notify-wrapper > .notify.success:before {
+  content: ":D";
+}
+#notify-wrapper > .notify.error {
+  background: linear-gradient(135deg, #ff6159 0%, #ec3026 100%);
+}
+#notify-wrapper > .notify.error:before {
+  content: ":(";
+}
+#notify-wrapper > .notify.default {
+  background: linear-gradient(135deg, #dadada 0%, #cbcbcb 100%);
+  color: #333;
+}
+#notify-wrapper > .notify.default:before {
+  content: ":|";
+}
+@media (max-width: 520px) {
+  #notify-wrapper {
+    width: 100%;
+    max-width: 100%;
+  }
+  #notify-wrapper > .notify {
+    margin-bottom: 0;
+  }
+  #notify-wrapper > .notify > .close-notify {
+    opacity: .4;
+  }
+}
+@media screen and (-ms-high-contrast: active), (-ms-high-contrast: none) {
+  #notify-wrapper > .notify {
+    transition: none;
+  }
+  #notify-wrapper > .notify > p {
+    transition-delay: 0s;
+  }
+}

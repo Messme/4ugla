@@ -1,0 +1,17 @@
+extends layout
+
+block content
+  div.container
+    div.row
+      div.col.primary-box.p-4
+        h1= title
+        p Добро пожаловать #{title}
+        p Быстрые переходы:
+        nav
+          ul.list-group
+            li.list-group.m-1
+              a(href="/" class="link-primary list-group-item list-group-item-action") Главная
+            li.list-group.m-1
+              a(href="/editor" class="link-primary list-group-item list-group-item-action") Редактор шаблона
+            li.list-group.m-1
+              a(href="/info" class="link-primary list-group-item list-group-item-action") Информация

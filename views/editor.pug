@@ -1,0 +1,183 @@
+extends layout
+
+mixin slider(id)
+    div(id='param-'+id class="slider")
+        div.slider-foreground
+        div.slider-value.wide.unselectable 0
+        div.slider-mouse-handler
+
+mixin sliderSection(id, name)
+    div(id='param-'+id class="slider" name=name)
+        div.slider-foreground
+        div.slider-value.unselectable 0
+        div.slider-mouse-handler
+
+mixin param-field(id, label)
+    div.param-field
+        label.param-label.unselectable= label
+        +slider(id)
+
+mixin color-field(id, span, image)
+    div.color-field
+        input(type="image" src="images/textures/" + image class="params-colors__button" id=id)
+        span=span
+
+mixin color-bg-field(id, span, image)
+    div.color-field
+        input(type="image" src="images/textures/" + image class="params-bg-colors__button" id=id)
+        span=span
+
+mixin edge-field(id, span, image)
+    div.color-field.edge-field
+        input(type="button" style="background-image: url(../images/"+image+")" class="params-edge__button" id=id)
+        span=span
+
+mixin plinth-field(id, span, image)
+    div.color-field.plinth-field
+        input(type="button" style="background-image: url(../images/"+image+")" class="params-plinth__button" id=id)
+        span=span
+
+block append head
+    link(rel='stylesheet', href='/stylesheets/editor.css')
+
+block content
+    div.context-menu#context-menu
+        div.context-nav
+            button(class="btn btn-secondary m-1" id="context-close") X
+            button(class="btn btn-light m-1" id="context-open" disabled=true) Open/Close
+            button(class="btn btn-light m-1" id="context-edit" disabled=true) Edit
+            button(class="btn btn-danger m-1" id="context-delete") Delete
+
+    div(class="modal" id="modifier" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-hidden="true")
+        div.modal-dialog.modal-dialog-centered
+            div.modal-content
+                div.modal-header
+                    h5 Добавление модификатора
+                    button(type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close")
+                div.modal-body
+                    form
+                        div.mb-3
+                            label(for="modifierType" class="form-label") Тип
+                            select(id="modifierType" class="form-select")
+                        button(type="button" class="btn btn-primary" id="add-modifier-button") Добавить
+                div.modal-footer
+                    button(type="button" class="btn btn-secondary" data-bs-dismiss="modal") Close
+
+    div(class="modal" id="template2d" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-hidden="true")
+        div.modal-dialog.modal-dialog-centered.template-2d-modal
+            div.modal-content
+                div.modal-header
+                    h5 Схема изделия
+                    button(type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close")
+                div.modal-body
+                    div.template-2d-navs
+                        button(type="button" class="template-2d-nav__button active" id="frontView") Вид спереди
+                        button(type="button" class="template-2d-nav__button" id="sideView") Вид сбоку
+                        button(type="button" class="template-2d-nav__button" id="topView") Вид сверху
+                        div#template-2d-canvas-placement
+                div.modal-footer
+                    button(type="button" class="btn btn-secondary" data-bs-dismiss="modal") Close
+
+    div.container
+        h2 Конструктор шкафов
+        p Измените габариты выбранного шаблона мебели, добавьте ящики и полки по желанию
+        div.template-editor.row
+            div.canvas-wrapper.col-md-6.col-sm-12.col.position-relative
+                div(class="justify-content-center align-items-center h-100 loader-bg" style="display: flex; z-index: 9;")
+                    button(class="btn spinner-btn" type="button" disabled)
+                        div.spinner-border.spinner-border-sm(role="status")
+                            span.visually-hidden Загрузка...
+                div(class="editor-hud__right position-absolute")
+                    button.btn.btn-light.m-2(id="viewmode") View Mode
+                    button.btn.btn-light(id="editmode") Edit Mode
+                div#canvas-placement
+            div.params-wrapper.col-md-6.col-sm-12.col
+                div.params-nav
+                    button(type="button" class="params-nav__button active" id="btn-params-size") Габариты
+                    button(type="button" class="params-nav__button" id="btn-params-color") Цвет
+                    button(type="button" class="params-nav__button" id="btn-params-opt") Дополнительно
+                div(class="params-panel" id="params-size")
+                    +param-field('width', 'Ширина')
+                    +param-field('height', 'Высота')
+                    +param-field('depth', 'Глубина')
+                    div.param-field
+                        label.param-label.unselectable Секции
+                        +sliderSection('vsection', 'vertical-sec')
+                        +sliderSection('hsection', 'horizontal-sec')
+                    div.param-field
+                        label.param-label.unselectable Кромка
+                        +edge-field('wide-edge', '2 мм, в цвет', 'kromka_tolstaya.jpg')
+                        +edge-field('thin-edge', '0.4 мм, в цвет', 'kromka_tonkaya.jpg')
+                    div.panels-nav
+                        button(type="button" class="nav-panels-btn right-align classic-editor-btn" name="params-color") Выбрать цвет >
+                div(class="params-panel" id="params-color" style="display:none;")
+                    h3 Цвет
+                    div.colors-block
+                        +color-field("white-ldsp", "Белый влагостойкий, 16мм", "white-shagreen.jpg")
+                        +color-field("white-shagreen", "Белый шагрень, 16мм", "white-shagreen.jpg")
+                        +color-field("black-wenge", "Венге темный, 16мм", "black-wenge.jpg")
+                        +color-field("gray-ldsp", "Серый, 16мм", "gray-ldsp.jpg")
+                        +color-field("milk-oak", "Дуб молочный, 16мм", "milk-oak.jpg")
+                    h3 Задняя стенка
+                    div.colors-block
+                        +color-bg-field("bg-none", "Отсутствует", "material-no-icon.webp")
+                        +color-bg-field("bg-white-mdf", "Белый МДФ, 3мм", "white-shagreen.jpg")
+                        +color-bg-field("bg-white-shagreen", "Белый шагрень, 3мм", "white-shagreen.jpg")
+                        +color-bg-field("bg-black-wenge", "Венге темный, 3мм", "black-wenge.jpg")
+                        +color-bg-field("bg-gray-mdf", "Серый МДФ, 3мм", "gray-ldsp.jpg")
+                        +color-bg-field("bg-milk-oak", "Дуб молочный, 3мм", "milk-oak.jpg")
+                    div.panels-nav
+                        button(type="button" class="nav-panels-btn classic-editor-btn" name="params-size") < Габариты
+                        button(type="button" class="nav-panels-btn right-align classic-editor-btn" name="params-opt") Дополнительно >
+                div(class="params-panel" id="params-opt" style="display:none;")
+                    b Основание
+                    div.colors-block
+                        +plinth-field("plinth-none", "без основания", "plinth-no-photo.webp")
+                        +plinth-field("plinth-normal", "цоколь", "plinth-yes-photo.jpg")
+                        +plinth-field("plinth-legs", "на ножках", "legs-type-1.webp")
+                    div.panels-nav
+                        button(type="button" class="nav-panels-btn classic-editor-btn" name="params-color") < Выбрать цвет
+                        button(type="button" class="right-align classic-editor-btn") Оформить заказ >
+                div.editor-cost-line
+                    span Итого:
+                    a(href="#" class="right-align buy-button-editor cost-text-editor") 0 руб.
+                div.debug-panel
+                    b(style="font-size: 14pt; margin-right: 15px;") Debug Mode
+                    label.switch
+                        input(type="checkbox" onchange="SwitchDebug(this.checked)")
+                        span.debug-switch.round
+        div.row
+            textarea#JSONTextarea JSON
+            button.btn.btn-light.btn-json(id="importjson") Import
+            button.btn.btn-light.btn-json(id="exportjson") Export
+        div.template-description.row.align-items-center.justify-content-between
+            div.col
+                h2 Параметры изделия
+                p Ширина:
+                    span#desc-width 1781мм
+                p высота:
+                    span#desc-height 1781мм
+                p Глубина:
+                    span#desc-depth 300мм
+                p Высота цоколя:
+                    span#desc-plinth-height без цоколя
+                br
+                p Материал:
+                    span#desc-material белый, ЛДСП 16мм
+                p Задняя стенка:
+                    span#desc-bg-material МДФ 3мм, белый
+                p Кромка (торцы):
+                    span#desc-edge толстая 2мм кромка в цвет
+                br
+                p Масса:
+                    span#desc-mass 84,9 кг
+                h3 Стоимость:
+                    span#desc-cost 10240 руб. 00 коп.
+            div.col.template-2d-card
+                div.card.text-dark
+                    input(type="image" src="images/template-2d-background.png" class="card-img")
+                    div.card-img-overlay.align-items-center.justify-content-center.d-flex(data-bs-toggle="modal" data-bs-target="#template2d" id="template2dbtn")
+                        label.card-title Открыть чертёж
+
+block scripts
+    script(src="/javascripts/canvas.js" type="module")
